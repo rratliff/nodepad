@@ -1,0 +1,13 @@
+h2 Edit Document
+p
+  a.button(href='/documents').
+    Back to all documents
+form(method='post', action='/documents/' + d.id)
+  input(name='document[id]', value=d.id, type='hidden')
+  input(name='_method', value='PUT', type='hidden')
+  -d=d
+  include ../partials/documents/fields
+form(method='post', action='/documents/' + d.id)
+  input(name='_method', value='DELETE', type='hidden')
+  input(type='submit', value='Delete')
+

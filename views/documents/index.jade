@@ -1,0 +1,8 @@
+p
+  a(href='/documents/new') New note
+ul
+  each d in documents
+    li
+      a(href='/documents/' + d._id)
+        =d.title
+

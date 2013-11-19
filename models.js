@@ -1,7 +1,9 @@
 var mongoose = require('mongoose');
 
 var doc = mongoose.Schema({
-    title: String
+    title: {type: String, index: true },
+    tag: [String],
+    data: String
 });
 mongoose.model('Document', doc);
 

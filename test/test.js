@@ -17,19 +17,11 @@ describe('GET /documents.json', function () {
 });
 
 describe('GET /', function () {
-    it('has a home page', function (done) {
+    it('redirects to the list of documents', function (done) {
         request(app)
             .get('/')
-            .expect('Content-Type', 'text/html; charset=utf-8')
-            .expect(200)
-            .end(function (err, res) {
-                if (err) {
-                    throw err;
-                }
-
-                res.text.should.include('<title>Express</title>');
-                done();
-            });
+            .expect('Location', '/documents')
+            .expect(302, done);
     });
 });
 

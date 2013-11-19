@@ -44,24 +44,42 @@ app.configure('development', function () {
 
 app.document = Document = require('./models.js').Document(db);
 
-app.get('/', routes.index);
+app.get('/', function (req, res) {
+    res.redirect('/documents');
+});
 app.get('/users', user.list);
+
+app.get('/documents/:id.:format?/edit', function (req, res) {
+    Document.findOne({ _id: req.params.id }, function (err, d) {
+        res.render('documents/edit.jade', {
+            d: d
+        });
+    });
+});
+
+app.get('/documents/new', function (req, res) {
+    res.render('documents/new.jade', {
+        d: new Document()
+    });
+});
 
 // List
 // :format can be json or html
-app.get('/documents.:format', function (req, res) {
+app.get('/documents.:format?', function (req, res) {
     Document.find(function (err, documents) {
         switch (req.params.format) {
         // When json, generate suitable data
         case 'json':
             res.send(documents.map(function (d) {
-                return d.__doc;
+                return d;
             }));
             break;
 
-            // Else render a database template (this isn't ready yet)
+        // Else render using jade
         default:
-            res.render('documents/index.jade');
+            res.render('documents/index.jade', {
+                documents: documents
+            });
         }
     });
 });
@@ -86,14 +104,52 @@ app.post('/documents.:format?', function (req, res) {
 
 // Read
 app.get('/documents/:id.:format?', function (req, res) {
+    Document.findOne({ _id: req.params.id }, function (err, d) {
+        // Respond according to the request format
+        switch (req.params.format) {
+        case 'json':
+            res.send(d);
+            break;
+        default:
+            res.render('documents/show.jade', {
+                d: d
+            });
+        }
+    });
 });
 
 // Update
 app.put('/documents/:id.:format?', function (req, res) {
+    Document.findOne({ _id: req.params.id }, function (err, d) {
+        d.title = req.body.document.title;
+        d.data = req.body.document.data;
+
+        d.save(function () {
+            // Respond according to the request format
+            switch (req.params.format) {
+            case 'json':
+                res.send(d);
+                break;
+            default:
+                res.redirect('/documents');
+            }
+        });
+    });
 });
 
 // Delete
 app.del('/documents/:id.:format?', function (req, res) {
+    Document.findOne({ _id: req.params.id }, function (err, d) {
+        d.remove(function () {
+            switch (req.params.format) {
+            case 'json':
+                res.send('true');
+                break;
+            default:
+                res.redirect('/documents');
+            }
+        });
+    });
 });
 
 if (!module.parent) {
