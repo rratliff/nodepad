@@ -1,13 +1,10 @@
-var mongoose = require('mongoose').Mongoose;
+var mongoose = require('mongoose');
 
-mongoose.model('Document', {
-    properties: ['title', 'data', 'tags'],
-
-    indexes: [
-        'title'
-    ]
+var doc = mongoose.Schema({
+    title: String
 });
+mongoose.model('Document', doc);
 
-exports.Document = function(db) {
+exports.Document = function (db) {
     return db.model('Document');
 };
