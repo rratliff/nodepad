@@ -1,5 +1,8 @@
-h2 New Document
-form(method='post', action='/documents')
-  - document=d
-  include ../partials/documents/fields
+extends ../layout
+
+block content
+  h2 New Document
+  form(method='post', action='/documents')
+    - document=d
+    include ../partials/documents/fields
 
